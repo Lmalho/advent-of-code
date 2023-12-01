@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
 func getDigitSum(line string) int {
+	spelledNumbers := [9]string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 	// get the first and last digit and add them
 	if len(line) == 0 {
 		return 0
@@ -16,9 +18,16 @@ func getDigitSum(line string) int {
 
 	var digitSlice []string
 
-	for _, r := range line {
+	for i, r := range line {
 		if unicode.IsNumber(r) {
 			digitSlice = append(digitSlice, string(r))
+		} else {
+			for j, v := range spelledNumbers {
+				// check if the substring from i to end of line starts with the spelled number
+				if strings.HasPrefix(line[i:], string(v)) {
+					digitSlice = append(digitSlice, strconv.Itoa(j+1))
+				}
+			}
 		}
 	}
 
