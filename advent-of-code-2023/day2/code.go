@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func analyzeResults(gameResults []string) bool {
+func analyzeResults(gameResults []string) map[string]int {
 
 	results := map[string]int{
 		"red":   0,
@@ -25,14 +25,10 @@ func analyzeResults(gameResults []string) bool {
 		results[color[1]] = value
 	}
 
-	if results["red"] > 12 || results["blue"] > 14 || results["green"] > 13 {
-		return false
-	}
-
-	return true
+	return results
 }
 
-func processLine(line string) (int, bool) {
+func processLine(line string) (int, bool, int) {
 
 	//Get Game id
 	gameIdIndex := strings.Index(line, ":")
@@ -42,18 +38,33 @@ func processLine(line string) (int, bool) {
 	fmt.Println(gameId)
 	games := strings.Split(line[gameIdIndex+1:], ";")
 
+	groupResultMax := map[string]int{
+		"red":   0,
+		"blue":  0,
+		"green": 0,
+	}
+
 	validGame := true
 
 	for _, game := range games {
 
-		validGame = analyzeResults(strings.Split(game, ","))
-		if !validGame {
-			break
+		gameResult := analyzeResults(strings.Split(game, ","))
+
+		if gameResult["red"] > 12 || gameResult["blue"] > 14 || gameResult["green"] > 13 {
+			validGame = false
+		}
+
+		for k, v := range gameResult {
+			if v > groupResultMax[k] {
+				groupResultMax[k] = v
+			}
 		}
 
 	}
 
-	return gameId, validGame
+	powerValue := multiplyMapValues(groupResultMax)
+
+	return gameId, validGame, powerValue
 }
 
 func sumValidIds(validMap map[int]bool) int {
@@ -66,6 +77,25 @@ func sumValidIds(validMap map[int]bool) int {
 	}
 
 	return sum
+}
+
+func sumPowerValues(powerMap map[int]int) int {
+	var sum int
+
+	for _, v := range powerMap {
+		sum += v
+	}
+
+	return sum
+}
+
+func multiplyMapValues(validMap map[string]int) int {
+	var mult int = 1
+
+	for _, v := range validMap {
+		mult *= v
+	}
+	return mult
 }
 
 func main() {
@@ -83,13 +113,16 @@ func main() {
 	defer file.Close()
 
 	validMap := make(map[int]bool)
+	powerMap := make(map[int]int)
 
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
-		gameId, ok := processLine(scanner.Text())
+		gameId, ok, powerValue := processLine(scanner.Text())
 		validMap[gameId] = ok
+		powerMap[gameId] = powerValue
 	}
 
-	fmt.Println(sumValidIds(validMap))
+	fmt.Println("Part one: ", sumValidIds(validMap))
+	fmt.Println("Part two: ", sumPowerValues(powerMap))
 }
