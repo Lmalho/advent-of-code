@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advent-of-code/utils"
 	"bufio"
 	"fmt"
 	"os"
@@ -62,7 +63,7 @@ func processLine(line string) (int, bool, int) {
 
 	}
 
-	powerValue := multiplyMapValues(groupResultMax)
+	powerValue := utils.MultiplyMapValues(groupResultMax)
 
 	return gameId, validGame, powerValue
 }
@@ -87,15 +88,6 @@ func sumPowerValues(powerMap map[int]int) int {
 	}
 
 	return sum
-}
-
-func multiplyMapValues(validMap map[string]int) int {
-	var mult int = 1
-
-	for _, v := range validMap {
-		mult *= v
-	}
-	return mult
 }
 
 func main() {

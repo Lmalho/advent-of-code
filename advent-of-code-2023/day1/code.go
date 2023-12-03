@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advent-of-code/utils"
 	"bufio"
 	"fmt"
 	"os"
@@ -41,16 +42,6 @@ func getDigitSum(line string) int {
 	return result
 }
 
-func sumSliceValues(slice []int) int {
-	var sum int
-
-	for _, v := range slice {
-		sum += v
-	}
-
-	return sum
-}
-
 func main() {
 	// read input.txt file
 	// for each line, process the line
@@ -72,7 +63,7 @@ func main() {
 		sumSlice = append(sumSlice, getDigitSum(scanner.Text()))
 	}
 
-	fmt.Println("sumSlice ", sumSliceValues(sumSlice))
+	fmt.Println("sumSlice ", utils.SumSliceValues(sumSlice))
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
