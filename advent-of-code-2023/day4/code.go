@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-func processLine(counter int, line string, cardMap map[int]int) (int, int, map[int]int) {
-	counter++
+func processLine(counter *int, line string, cardMap *map[int]int) int {
+	*counter++
 	//Get Game id
 
 	gameIdIndex := strings.Index(line, ":")
@@ -26,7 +26,7 @@ func processLine(counter int, line string, cardMap map[int]int) (int, int, map[i
 
 	countWinningNumbers := 0
 
-	cardMap[counter] += 1
+	(*cardMap)[*counter] += 1
 
 	for _, number := range cardNumbers {
 		_, found := slices.BinarySearch(winningNumbers, number)
@@ -35,10 +35,10 @@ func processLine(counter int, line string, cardMap map[int]int) (int, int, map[i
 		}
 	}
 	for i := 1; i <= countWinningNumbers; i++ {
-		cardMap[counter+i] += cardMap[counter]
+		(*cardMap)[*counter+i] += (*cardMap)[*counter]
 	}
 
-	return counter, int(math.Pow(2, float64(countWinningNumbers-1))), cardMap
+	return int(math.Pow(2, float64(countWinningNumbers-1)))
 }
 
 func main() {
@@ -62,7 +62,7 @@ func main() {
 	counter := 0
 
 	for scanner.Scan() {
-		counter, points, cardMap = processLine(counter, scanner.Text(), cardMap)
+		points = processLine(&counter, scanner.Text(), &cardMap)
 
 		results = append(results, points)
 	}
