@@ -21,6 +21,16 @@ func MultiplyMapValues(validMap map[string]int) int {
 	return mult
 }
 
+func MultiplySliceValues(slice []int) int {
+	var mult int = 1
+
+	for _, v := range slice {
+		mult *= v
+	}
+
+	return mult
+}
+
 func ConvertStringSliceToIntSlice(stringSlice []string) []int {
 	var intSlice []int
 
